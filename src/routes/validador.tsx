@@ -8,7 +8,7 @@ import type { LineId } from "@/lib/bodega/types";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/validador")({
-  validateSearch: (s: Record<string, unknown>) => ({ lote: typeof s.lote === "string" ? s.lote : undefined }),
+  validateSearch: (s: Record<string, unknown>): { lote?: string } => ({ lote: typeof s.lote === "string" ? s.lote : undefined }),
   head: () => ({
     meta: [
       { title: "Validador de línea · Bodega Miras" },

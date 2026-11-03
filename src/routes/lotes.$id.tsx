@@ -58,7 +58,7 @@ function LotPage() {
         {m.note && <span className="rounded-md border bg-card px-2 py-1">{m.note}</span>}
         {lot.status === "activo" && bal > 0 && (
           <>
-            <Link to="/movimiento" search={{ origen: id, tipo: undefined }} className="rounded-md bg-primary px-2.5 py-1 text-primary-foreground">Usar como origen</Link>
+            <Link to="/movimiento" search={{ origen: id }} className="rounded-md bg-primary px-2.5 py-1 text-primary-foreground">Usar como origen</Link>
             <Link to="/validador" search={{ lote: id }} className="rounded-md border bg-card px-2.5 py-1 text-ink">Validar línea</Link>
           </>
         )}

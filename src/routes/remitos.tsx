@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Btn, Field, Notice, PageTitle, PlantCard, PlantChip, inputCls } from "@/components/bodega/ui";
 import { annulMovement, applyMovement, BodegaError, RECEPTION_TOLERANCE, transitLots } from "@/lib/bodega/engine";
 import { fmtDateTime, fmtL, fmtPct } from "@/lib/bodega/format";
@@ -84,7 +84,8 @@ function Reception({ lot, onAnnul }: { lot: Lot; onAnnul: (id: string) => void }
   const dest = m.data.destPlant!;
   const [liters, setLiters] = useState(String(lot.litersIn));
   const [vesselId, setVesselId] = useState("");
-  const [date, setDate] = useState(() => today());
+  const [date, setDate] = useState("");
+  useEffect(() => setDate(today()), []);
   const [err, setErr] = useState<string | null>(null);
   const [ok, setOk] = useState<string | null>(null);
   const vessels = [...d.vessels.values()].filter((v) => v.vessel.plant === dest && v.vessel.kind !== "barrica" && !v.dirty && v.free > 0.5);

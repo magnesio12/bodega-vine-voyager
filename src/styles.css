@@ -95,7 +95,3 @@
   font-variant-numeric: tabular-nums;
   font-family: var(--font-sans);
 }
-
-@utility edge-transfer {
-  border-left: 2px dashed var(--color-warn);
-}
