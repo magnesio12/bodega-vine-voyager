@@ -24,8 +24,9 @@ describe("Reglas de trazabilidad", () => {
     expect(() =>
       applyMovement(t.db, { type: "embotellado", date: "2026-11-03T12:00", sources: [{ lotId: transit.id, liters: 1000 }], productId: "jov-mal" }),
     ).toThrow(/en tránsito/);
-    const rec = applyMovement(t.db, { type: "recepcion", date: "2026-11-03T11:00", sources: [{ lotId: transit.id, liters: 6000 }], receivedLiters: 5990, vesselId: "T2" });
-    expect(rec.lots[0]!.plant).toBe("MQ");
+    expect(() =>
+      applyMovement(t.db, { type: "traslado", date: "2026-11-03T09:00", sources: [{ lotId: transit!.id, liters: 100 }] }),
+    ).toThrow(/en tránsito/);
   });
 
   it("2. recepción con más de 0,3 % de diferencia se rechaza indicando la diferencia exacta", () => {
