@@ -492,12 +492,13 @@ export function applyMovement(db: Db, input: MovementInput): { db: Db; movement:
       break;
     }
     case "traslado": {
-      if (sources.length !== 1) fail("Un traslado lleva un solo lote de origen.");
+      if (sources.length < 1 || sources.length > 5) fail("Un traslado carga de 1 a 5 lotes de la misma planta.");
       const l = srcLots[0]!;
       if (totalIn > TRUCK_MAX) fail(`Un camión lleva hasta ${fmtL(TRUCK_MAX)} por viaje; se pidieron ${fmtL(totalIn)}.`);
       next.remitoSeq += 1;
       const remito = `R-${String(next.remitoSeq).padStart(4, "0")}`;
-      const lot = mkLot({ name: `${baseName(l.name)} (en tránsito)`, litersIn: totalIn, status: "transito", remito });
+      const tnames = [...new Set(srcLots.map((x) => baseName(x.name)))];
+      const lot = mkLot({ name: `${tnames.length === 1 ? tnames[0] : tnames.join(" + ")} (en tránsito)`, litersIn: totalIn, status: "transito", remito });
       movement.merma = 0;
       movement.data = { remito, truck: input.truck || "AF 512 KQ", driver: input.driver || "Chofer de turno", destPlant: otherPlant(l.plant!), sentLiters: totalIn };
       movement.outputs = [lot.id];

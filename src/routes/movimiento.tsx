@@ -25,7 +25,7 @@ export const Route = createFileRoute("/movimiento")({
   component: MovementForm,
 });
 
-const MAX_SOURCES: Partial<Record<MovementType, number>> = { descube: 1, corte: 5, maceracion: 1, crianza_llenado: 1, crianza_reunion: 16, traslado: 1, embotellado: 1 };
+const MAX_SOURCES: Partial<Record<MovementType, number>> = { descube: 1, corte: 5, maceracion: 1, crianza_llenado: 1, crianza_reunion: 16, traslado: 5, embotellado: 1 };
 
 function MovementForm() {
   const search = Route.useSearch();

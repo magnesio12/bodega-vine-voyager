@@ -9,14 +9,15 @@ const lotBy = (db: Db, pred: (l: Db["lots"][number]) => boolean) => derive(db).l
 function withFoWine() {
   let db = buildSeed();
   db = applyMovement(db, { type: "limpieza", date: "2026-11-01T08:00", vesselId: "PF2" }).db;
-  const r = applyMovement(db, { type: "ingreso", date: "2026-11-01T09:00", parcelId: "M1", kg: 7000, vesselId: "PF2" });
-  return { db: r.db, lotId: r.lots[0]!.id };
+  const a = applyMovement(db, { type: "ingreso", date: "2026-11-01T09:00", parcelId: "M1", kg: 7000, vesselId: "PF2" });
+  const b = applyMovement(a.db, { type: "ingreso", date: "2026-11-01T10:00", parcelId: "M1", kg: 4000, vesselId: "TF1" });
+  return { db: b.db, lotId: a.lots[0]!.id, lotId2: b.lots[0]!.id };
 }
 
 describe("Reglas de trazabilidad", () => {
   it("1. un traslado de 6.000 L deja el lote en tránsito y no disponible", () => {
-    const { db, lotId } = withFoWine();
-    const t = applyMovement(db, { type: "traslado", date: "2026-11-03T08:00", sources: [{ lotId, liters: 6000 }] });
+    const { db, lotId, lotId2 } = withFoWine();
+    const t = applyMovement(db, { type: "traslado", date: "2026-11-03T08:00", sources: [{ lotId, liters: 3200 }, { lotId: lotId2, liters: 2800 }] });
     const transit = t.lots[0]!;
     expect(transit.status).toBe("transito");
     expect(derive(t.db).balance(transit.id)).toBe(6000);
@@ -28,8 +29,8 @@ describe("Reglas de trazabilidad", () => {
   });
 
   it("2. recepción con más de 0,3 % de diferencia se rechaza indicando la diferencia exacta", () => {
-    const { db, lotId } = withFoWine();
-    const t = applyMovement(db, { type: "traslado", date: "2026-11-03T08:00", sources: [{ lotId, liters: 6000 }] });
+    const { db, lotId, lotId2 } = withFoWine();
+    const t = applyMovement(db, { type: "traslado", date: "2026-11-03T08:00", sources: [{ lotId, liters: 3200 }, { lotId: lotId2, liters: 2800 }] });
     expect(() =>
       applyMovement(t.db, { type: "recepcion", date: "2026-11-03T11:00", sources: [{ lotId: t.lots[0]!.id, liters: 6000 }], receivedLiters: 5980, vesselId: "T2" }),
     ).toThrow("Diferencia: 20 L (0,33 %)");
@@ -37,9 +38,9 @@ describe("Reglas de trazabilidad", () => {
 
   it("3. impide plantas distintas, superar capacidad y tomar más de lo disponible", () => {
     const { db, lotId } = withFoWine();
-    expect(() => applyMovement(db, { type: "descube", date: "2026-11-02T08:00", sources: [{ lotId, liters: 1000 }], vesselId: "T2" })).toThrow(/plantas|Planta/);
-    expect(() => applyMovement(db, { type: "descube", date: "2026-11-02T08:00", sources: [{ lotId, liters: 4000 }], vesselId: "TF1" })).toThrow(/capacidad/);
-    expect(() => applyMovement(db, { type: "descube", date: "2026-11-02T08:00", sources: [{ lotId, liters: 5000 }], vesselId: "TF1" })).toThrow(/disponibles/);
+    expect(() => applyMovement(db, { type: "descube", date: "2026-11-02T08:00", sources: [{ lotId, liters: 1000 }], vesselId: "T2" })).toThrow(/Planta/);
+    expect(() => applyMovement(db, { type: "descube", date: "2026-11-02T08:00", sources: [{ lotId, liters: 4000 }], vesselId: "TF2" })).toThrow(/capacidad/);
+    expect(() => applyMovement(db, { type: "descube", date: "2026-11-02T08:00", sources: [{ lotId, liters: 5000 }], vesselId: "TF2" })).toThrow(/disponibles/);
     const fo = lotBy(db, (l) => l.vesselId === "TF2" && l.status === "activo" && derive(db).balance(l.id) > 0);
     const mq = lotBy(db, (l) => l.vesselId === "T1" && derive(db).balance(l.id) > 0);
     expect(() =>
