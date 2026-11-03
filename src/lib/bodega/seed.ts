@@ -159,7 +159,7 @@ export function buildSeed(): Db {
   run({ type: "corte", date: "2025-05-20T09:00", sources: [all("NQR"), S("MAL", 401)], vesselId: "T3", name: "Base de guarda" }, ["BASE"]);
   const gb = run({ type: "crianza_llenado", date: "2025-05-20T11:00", sources: [S("BASE", 675)], vesselIds: ["B13", "B14", "B15"] });
   run({ type: "embotellado", date: "2025-05-27T08:00", sources: [S("PN", 1144)], productId: "jov-pn" });
-  run({ type: "embotellado", date: "2025-05-27T13:00", sources: [S("MAL", 1690)], productId: "jov-mal" });
+  run({ type: "embotellado", date: "2025-05-27T13:00", sources: [S("MAL", 2190)], productId: "jov-mal" });
   clean("2025-05-28T08:00", "T1");
   clean("2025-05-28T09:00", "T4");
   trip("2025-06-10", "MER2", 1000, { at: "2025-06-10T11:20", liters: 997, vessel: "T1" }, "MERR2");
