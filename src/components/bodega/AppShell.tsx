@@ -42,7 +42,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       </header>
       <main className="mx-auto max-w-6xl px-3 py-4">{children}</main>
       <footer className="mx-auto max-w-6xl px-3 pb-6 text-[11px] text-muted-foreground">
-        Sistema de trazabilidad · Desarrollado por KODARVIA para Bodega Miras · Datos guardados en este navegador
+        Sistema de trazabilidad · Datos guardados en este navegador
       </footer>
     </div>
   );
