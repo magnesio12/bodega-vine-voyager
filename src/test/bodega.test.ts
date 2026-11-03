@@ -73,8 +73,8 @@ describe("Reglas de trazabilidad", () => {
     expect(r.bottles.map((b) => b.cells[1])).toEqual(["Corte de guarda", "Corte de guarda"]);
     // BASE = 599 L de Neuquén + 401 L de Malbec M1 → 59,9 %; guarda = 675 (barricas) + 325 (tanque) + 60 CF ⇒ 1.000/1.060 de BASE
     const expected = (599 / 1000) * (1000 / 1060);
-    expect(r.bottles[0].fraction).toBeCloseTo(expected, 9);
-    expect(r.bottles[0].liters).toBeCloseTo(600 * expected, 6);
+    expect(r.bottles[0]!.fraction).toBeCloseTo(expected, 9);
+    expect(r.bottles[0]!.liters).toBeCloseTo(600 * expected, 6);
     const csv = recallCsv(r).split("\n");
     expect(csv.slice(1)).toEqual(r.bottles.map((b) => b.cells.join(";")));
   });
