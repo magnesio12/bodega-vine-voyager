@@ -81,7 +81,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Bodega Miras · Trazabilidad" },
       { name: "description", content: "Trazabilidad de lotes de vino entre Planta Mainqué y Planta Fernández Oro." },
-      { name: "author", content: "KODARVIA" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
