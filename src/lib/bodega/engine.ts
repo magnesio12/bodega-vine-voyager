@@ -59,15 +59,10 @@ export function monthsBetween(a: string, b: string) {
   return (y2 - y1) * 12 + (m2 - m1) + (d2 - d1) / 30;
 }
 export function daysBetween(a: string, b: string) {
-  const t1 = Date.UTC(...(a.slice(0, 10).split("-").map(Number) as [number, number, number]));
-  const t2 = Date.UTC(...(b.slice(0, 10).split("-").map(Number) as [number, number, number]));
-  // months are 0-based in Date.UTC but both shift equally except across month lengths; fix:
   const fix = (s: string) => {
     const [y, m, d] = s.slice(0, 10).split("-").map(Number);
     return Date.UTC(y, m - 1, d);
   };
-  void t1;
-  void t2;
   return Math.round((fix(b) - fix(a)) / 86400000);
 }
 
@@ -275,7 +270,7 @@ export function describePath(d: Derived, ids: string[]) {
     .map((id) => {
       const l = d.lots.get(id);
       if (!l) return id;
-      return l.remito ? `${l.code} (remito ${l.remito})` : l.code;
+      return l.status === "transito" ? `${l.code} (camión, remito ${l.remito})` : l.code;
     })
     .join(" ← ");
 }
@@ -296,8 +291,14 @@ function organicCheck(d: Derived, id: string, c: Conditions): Check {
   if (c.organic) return { label: "Orgánico", ok: true, detail: `Todos sus ancestros de uva son orgánicos (${c.origins.map((o) => o.parcel.id).join(", ")}).` };
   const bad = c.origins.filter((o) => !o.parcel.organic);
   const fr = bad.reduce((s, o) => s + o.fraction, 0);
-  const detail = bad
-    .map((o) => `${o.lot.code} · ${o.lot.name}, parcela ${o.parcel.id} (${o.parcel.origin}, no orgánica) aporta ${fmtPct(o.fraction)}. Camino: ${describePath(d, pathTo(d, id, o.lot.id))}`)
+  const byParcel = new Map<string, OriginInfo[]>();
+  for (const o of bad) byParcel.set(o.parcel.id, [...(byParcel.get(o.parcel.id) ?? []), o]);
+  const detail = [...byParcel.values()]
+    .map((os) => {
+      const p = os[0].parcel;
+      const f = os.reduce((s, o) => s + o.fraction, 0);
+      return `El ancestro que rompe la regla es la parcela ${p.id} (${p.variety}, ${p.origin}, no orgánica): aporta ${fmtPct(f)} a través de ${os.map((o) => `${o.lot.code} ${fmtPct(o.fraction)}`).join(", ")}. Camino: ${describePath(d, pathTo(d, id, os[0].lot.id))}.`;
+    })
     .join(" ");
   return { label: "Orgánico", ok: false, detail: `No es orgánico: ${fmtPct(fr)} de sus litros viene de uva no orgánica. ${detail}` };
 }
