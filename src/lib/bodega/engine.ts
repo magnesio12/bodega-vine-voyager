@@ -54,13 +54,13 @@ export interface Derived {
 }
 
 export function monthsBetween(a: string, b: string) {
-  const [y1, m1, d1] = a.slice(0, 10).split("-").map(Number);
-  const [y2, m2, d2] = b.slice(0, 10).split("-").map(Number);
+  const [y1, m1, d1] = a.slice(0, 10).split("-").map(Number) as [number, number, number];
+  const [y2, m2, d2] = b.slice(0, 10).split("-").map(Number) as [number, number, number];
   return (y2 - y1) * 12 + (m2 - m1) + (d2 - d1) / 30;
 }
 export function daysBetween(a: string, b: string) {
   const fix = (s: string) => {
-    const [y, m, d] = s.slice(0, 10).split("-").map(Number);
+    const [y, m, d] = s.slice(0, 10).split("-").map(Number) as [number, number, number];
     return Date.UTC(y, m - 1, d);
   };
   return Math.round((fix(b) - fix(a)) / 86400000);
@@ -232,7 +232,7 @@ export function conditions(d: Derived, id: string, today?: string): Conditions {
   for (const o of origins) comp.set(o.parcel.variety, (comp.get(o.parcel.variety) ?? 0) + o.fraction);
   const share1958 = origins.filter((o) => o.parcel.is1958).reduce((s, o) => s + o.fraction, 0);
   const harvests = origins.map((o) => o.lot.harvestDate ?? o.lot.date).sort();
-  const latest = harvests.length ? harvests[harvests.length - 1] : null;
+  const latest = harvests.length ? harvests[harvests.length - 1]! : null;
   const lot = d.lots.get(id);
   let inProgress = 0;
   if (lot && today && lot.status === "activo" && d.balance(id) > 0) inProgress = barrelTime(d, id, today);
@@ -295,9 +295,9 @@ function organicCheck(d: Derived, id: string, c: Conditions): Check {
   for (const o of bad) byParcel.set(o.parcel.id, [...(byParcel.get(o.parcel.id) ?? []), o]);
   const detail = [...byParcel.values()]
     .map((os) => {
-      const p = os[0].parcel;
+      const p = os[0]!.parcel;
       const f = os.reduce((s, o) => s + o.fraction, 0);
-      return `El ancestro que rompe la regla es la parcela ${p.id} (${p.variety}, ${p.origin}, no orgánica): aporta ${fmtPct(f)} a través de ${os.map((o) => `${o.lot.code} ${fmtPct(o.fraction)}`).join(", ")}. Camino: ${describePath(d, pathTo(d, id, os[0].lot.id))}.`;
+      return `El ancestro que rompe la regla es la parcela ${p.id} (${p.variety}, ${p.origin}, no orgánica): aporta ${fmtPct(f)} a través de ${os.map((o) => `${o.lot.code} ${fmtPct(o.fraction)}`).join(", ")}. Camino: ${describePath(d, pathTo(d, id, os[0]!.lot.id))}.`;
     })
     .join(" ");
   return { label: "Orgánico", ok: false, detail: `No es orgánico: ${fmtPct(fr)} de sus litros viene de uva no orgánica. ${detail}` };
@@ -393,17 +393,17 @@ export function applyMovement(db: Db, input: MovementInput): { db: Db; movement:
       if (l.status === "transito") fail(`El lote ${l.code} está en tránsito (remito ${l.remito}) y no está disponible hasta registrar la recepción.`);
       if (l.status === "embotellado") fail(`El lote ${l.code} ya está embotellado.`);
       const bal = d.balance(l.id);
-      if (sources[i].liters > bal + EPS) fail(`El lote ${l.code} tiene ${fmtL(bal)} disponibles y se pidieron ${fmtL(sources[i].liters)}.`);
+      if (sources[i]!.liters > bal + EPS) fail(`El lote ${l.code} tiene ${fmtL(bal)} disponibles y se pidieron ${fmtL(sources[i]!.liters)}.`);
     });
   }
   const srcPlants = new Set(srcLots.map((l) => l.plant));
   if (t !== "recepcion" && srcPlants.size > 1) fail("Los orígenes están en plantas distintas: un movimiento interno no puede mezclar Mainqué y Fernández Oro.");
-  const srcPlant = srcLots[0]?.plant as PlantId | undefined;
+  const srcPlant = srcLots[0]!?.plant as PlantId | undefined;
   const totalIn = sources.reduce((s, x) => s + x.liters, 0);
   if (merma >= totalIn && totalIn > 0) fail("La merma no puede ser igual o mayor que los litros movidos.");
 
   const leaving = (vesselId: string) =>
-    sources.reduce((s, x, i) => (srcLots[i].vesselId === vesselId ? s + x.liters : s), 0);
+    sources.reduce((s, x, i) => (srcLots[i]!.vesselId === vesselId ? s + x.liters : s), 0);
 
   const checkDest = (vesselId: string | undefined, plant: PlantId | undefined, incoming: number, opts: { barrel?: boolean } = {}) => {
     const vs = vesselOf(vesselId) ?? fail("Elegí un recipiente de destino.");
@@ -448,11 +448,11 @@ export function applyMovement(db: Db, input: MovementInput): { db: Db; movement:
       }
       const out = totalIn - merma;
       const v = checkDest(input.vesselId, srcPlant, out);
-      if (t === "descube" && srcLots[0].vesselId === v.id) fail("El descube se hace hacia otro recipiente.");
+      if (t === "descube" && srcLots[0]!.vesselId === v.id) fail("El descube se hace hacia otro recipiente.");
       const names = [...new Set(srcLots.map((l) => baseName(l.name)))];
       const name =
         input.name ??
-        (names.length === 1 ? names[0] : `Corte ${[...new Set(srcLots.flatMap((l) => conditions(d, l.id).composition.map((c) => c.variety)))].join("/")}`);
+        (names.length === 1 ? names[0]! : `Corte ${[...new Set(srcLots.flatMap((l) => conditions(d, l.id).composition.map((c) => c.variety)))].join("/")}`);
       const lot = mkLot({ name, litersIn: out, status: "activo", plant: v.plant, vesselId: v.id });
       movement.data = { vesselId: v.id };
       movement.outputs = [lot.id];
@@ -460,16 +460,16 @@ export function applyMovement(db: Db, input: MovementInput): { db: Db; movement:
     }
     case "maceracion": {
       if (sources.length !== 1) fail("La maceración tiene un solo origen.");
-      const c = conditions(d, srcLots[0].id);
+      const c = conditions(d, srcLots[0]!.id);
       const red = c.origins.find((o) => o.parcel.color !== "blanco");
-      if (red) fail(`La maceración con pieles es para blancos: ${srcLots[0].code} contiene ${red.parcel.variety} (${red.parcel.id}).`);
+      if (red) fail(`La maceración con pieles es para blancos: ${srcLots[0]!.code} contiene ${red.parcel.variety} (${red.parcel.id}).`);
       if (!input.macStart || !input.macEnd) fail("Indicá fecha de inicio y de prensado.");
       const days = daysBetween(input.macStart!, input.macEnd!);
       if (days < 20 || days > 40) fail(`La maceración debe durar entre 20 y 40 días; registrada: ${days} días.`);
       const loss = round1(totalIn * MACERATION_LOSS);
       const out = totalIn - loss;
       const v = checkDest(input.vesselId, srcPlant, out);
-      const lot = mkLot({ name: input.name ?? `Naranjo de ${c.composition[0]?.variety ?? "blanco"}`, litersIn: out, status: "activo", plant: v.plant, vesselId: v.id, date: input.macEnd });
+      const lot = mkLot({ name: input.name ?? `Naranjo de ${c.composition[0]?.variety ?? "blanco"}`, litersIn: out, status: "activo", plant: v.plant, vesselId: v.id, date: input.macEnd! });
       movement.date = input.macEnd!;
       movement.merma = loss;
       movement.data = { vesselId: v.id, macStart: input.macStart, macEnd: input.macEnd };
@@ -484,7 +484,7 @@ export function applyMovement(db: Db, input: MovementInput): { db: Db; movement:
       const outs: string[] = [];
       for (const vid of ids) {
         const v = checkDest(vid, srcPlant, per, { barrel: true });
-        const lot = mkLot({ name: `${baseName(srcLots[0].name)} · ${v.id}`, litersIn: per, status: "activo", plant: v.plant, vesselId: v.id });
+        const lot = mkLot({ name: `${baseName(srcLots[0]!.name)} · ${v.id}`, litersIn: per, status: "activo", plant: v.plant, vesselId: v.id });
         outs.push(lot.id);
       }
       movement.data = { vesselIds: ids };
@@ -493,7 +493,7 @@ export function applyMovement(db: Db, input: MovementInput): { db: Db; movement:
     }
     case "traslado": {
       if (sources.length !== 1) fail("Un traslado lleva un solo lote de origen.");
-      const l = srcLots[0];
+      const l = srcLots[0]!;
       if (totalIn > TRUCK_MAX) fail(`Un camión lleva hasta ${fmtL(TRUCK_MAX)} por viaje; se pidieron ${fmtL(totalIn)}.`);
       next.remitoSeq += 1;
       const remito = `R-${String(next.remitoSeq).padStart(4, "0")}`;
@@ -505,7 +505,7 @@ export function applyMovement(db: Db, input: MovementInput): { db: Db; movement:
     }
     case "recepcion": {
       if (sources.length !== 1) fail("Elegí el lote en tránsito a recibir.");
-      const tl = srcLots[0];
+      const tl = srcLots[0]!;
       if (tl.status !== "transito") fail(`${tl.code} no es un lote en tránsito.`);
       const bal = d.balance(tl.id);
       if (bal <= 0) fail(`El remito ${tl.remito} ya fue recibido.`);
@@ -529,7 +529,7 @@ export function applyMovement(db: Db, input: MovementInput): { db: Db; movement:
     }
     case "embotellado": {
       if (sources.length !== 1) fail("El embotellado parte de un solo lote.");
-      const l = srcLots[0];
+      const l = srcLots[0]!;
       if (l.plant !== "MQ") fail(`Solo se embotella en Planta Mainqué; ${l.code} está en ${PLANT_NAME[l.plant ?? "FO"]}.`);
       const product = db.products.find((p) => p.id === input.productId) ?? fail("Elegí el producto.");
       const out = totalIn - merma;
@@ -615,8 +615,8 @@ export function recall(db: Db, trasladoId: string): RecallResult {
   const d = derive(db);
   const m = d.movements.get(trasladoId) ?? fail("No existe el remito.");
   if (m.type !== "traslado") fail("Elegí un traslado.");
-  const impact = new Map<string, number>([[m.outputs[0], 1]]);
-  const paths = new Map<string, number>([[m.outputs[0], 1]]);
+  const impact = new Map<string, number>([[m.outputs[0]!, 1]]);
+  const paths = new Map<string, number>([[m.outputs[0]!, 1]]);
   for (const mv of d.active) {
     if (mv.seq <= m.seq) continue;
     const total = mv.sources.reduce((s, x) => s + x.liters, 0);

@@ -85,7 +85,7 @@ function Dashboard() {
         <div className="grid gap-2 md:grid-cols-2">
           {transit.map((t) => {
             const m = d.movements.get(t.movementId)!;
-            const origin = d.lots.get(m.sources[0].lotId);
+            const origin = d.lots.get(m.sources[0]!.lotId);
             return (
               <PlantCard key={t.id} plant={null}>
                 <div className="flex items-center justify-between">

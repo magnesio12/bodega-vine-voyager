@@ -10,28 +10,28 @@ function withFoWine() {
   let db = buildSeed();
   db = applyMovement(db, { type: "limpieza", date: "2026-11-01T08:00", vesselId: "PF2" }).db;
   const r = applyMovement(db, { type: "ingreso", date: "2026-11-01T09:00", parcelId: "M1", kg: 7000, vesselId: "PF2" });
-  return { db: r.db, lotId: r.lots[0].id };
+  return { db: r.db, lotId: r.lots[0]!.id };
 }
 
 describe("Reglas de trazabilidad", () => {
   it("1. un traslado de 6.000 L deja el lote en tránsito y no disponible", () => {
     const { db, lotId } = withFoWine();
     const t = applyMovement(db, { type: "traslado", date: "2026-11-03T08:00", sources: [{ lotId, liters: 6000 }] });
-    const transit = t.lots[0];
+    const transit = t.lots[0]!;
     expect(transit.status).toBe("transito");
     expect(derive(t.db).balance(transit.id)).toBe(6000);
     expect(() =>
       applyMovement(t.db, { type: "embotellado", date: "2026-11-03T12:00", sources: [{ lotId: transit.id, liters: 1000 }], productId: "jov-mal" }),
     ).toThrow(/en tránsito/);
     const rec = applyMovement(t.db, { type: "recepcion", date: "2026-11-03T11:00", sources: [{ lotId: transit.id, liters: 6000 }], receivedLiters: 5990, vesselId: "T2" });
-    expect(rec.lots[0].plant).toBe("MQ");
+    expect(rec.lots[0]!.plant).toBe("MQ");
   });
 
   it("2. recepción con más de 0,3 % de diferencia se rechaza indicando la diferencia exacta", () => {
     const { db, lotId } = withFoWine();
     const t = applyMovement(db, { type: "traslado", date: "2026-11-03T08:00", sources: [{ lotId, liters: 6000 }] });
     expect(() =>
-      applyMovement(t.db, { type: "recepcion", date: "2026-11-03T11:00", sources: [{ lotId: t.lots[0].id, liters: 6000 }], receivedLiters: 5980, vesselId: "T2" }),
+      applyMovement(t.db, { type: "recepcion", date: "2026-11-03T11:00", sources: [{ lotId: t.lots[0]!.id, liters: 6000 }], receivedLiters: 5980, vesselId: "T2" }),
     ).toThrow("Diferencia: 20 L (0,33 %)");
   });
 

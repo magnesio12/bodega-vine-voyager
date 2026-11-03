@@ -32,14 +32,14 @@ function Recall() {
     a.click();
     URL.revokeObjectURL(a.href);
   };
-  const origin = r ? d.lots.get(r.movement.sources[0].lotId) : undefined;
+  const origin = r ? d.lots.get(r.movement.sources[0]!.lotId) : undefined;
   return (
     <div>
       <PageTitle title="Simulación de retiro" sub="Recorre el grafo hacia adelante multiplicando las proporciones de cada arista y sumando caminos alternativos." />
       <Field label="Remito de traslado">
         <select className={inputCls} value={mid} onChange={(e) => setMid(e.target.value)}>
           {trips.map((m) => {
-            const l = d.lots.get(m.sources[0].lotId);
+            const l = d.lots.get(m.sources[0]!.lotId);
             return <option key={m.id} value={m.id}>{m.data.remito} · {fmtDate(m.date)} · {l?.name} · {fmtL(m.data.sentLiters ?? 0)}</option>;
           })}
         </select>
