@@ -107,10 +107,10 @@ function Dashboard() {
         <h2 className="mb-2 text-2xl">Accesos rápidos</h2>
         <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
           {[
-            { to: "/movimiento", search: { tipo: "ingreso" }, label: "Ingreso de uva" },
-            { to: "/movimiento", search: { tipo: "traslado" }, label: "Nuevo traslado" },
-            { to: "/movimiento", search: { tipo: "corte" }, label: "Registrar corte" },
-            { to: "/movimiento", search: { tipo: "embotellado" }, label: "Embotellar" },
+            { to: "/movimiento", search: { tipo: "ingreso" as const }, label: "Ingreso de uva" },
+            { to: "/movimiento", search: { tipo: "traslado" as const }, label: "Nuevo traslado" },
+            { to: "/movimiento", search: { tipo: "corte" as const }, label: "Registrar corte" },
+            { to: "/movimiento", search: { tipo: "embotellado" as const }, label: "Embotellar" },
           ].map((q) => (
             <Link key={q.label} to="/movimiento" search={q.search} className="rounded-md border bg-card px-3 py-3 text-sm font-medium text-ink hover:bg-muted">
               {q.label}

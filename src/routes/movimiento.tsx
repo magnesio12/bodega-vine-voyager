@@ -10,9 +10,9 @@ import { cn } from "@/lib/utils";
 const TYPES: MovementType[] = ["ingreso", "descube", "corte", "maceracion", "crianza_llenado", "crianza_reunion", "traslado", "embotellado", "limpieza"];
 
 export const Route = createFileRoute("/movimiento")({
-  validateSearch: (s: Record<string, unknown>): { tipo?: MovementType; origen?: string } => ({
-    tipo: (TYPES.includes(s.tipo as MovementType) ? s.tipo : undefined) as MovementType | undefined,
-    origen: typeof s.origen === "string" ? s.origen : undefined,
+  validateSearch: (s: Record<string, unknown>): { tipo?: MovementType | undefined; origen?: string | undefined } => ({
+    tipo: (TYPES.includes(s["tipo"] as MovementType) ? s["tipo"] : undefined) as MovementType | undefined,
+    origen: typeof s["origen"] === "string" ? s["origen"] : undefined,
   }),
   head: () => ({
     meta: [

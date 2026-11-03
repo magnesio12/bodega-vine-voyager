@@ -84,7 +84,7 @@ export function Occ({ occ, cap }: { occ: number; cap: number }) {
   );
 }
 
-export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string }) {
+export function Field({ label, children, hint }: { label: string; children: ReactNode; hint?: string | undefined }) {
   return (
     <label className="block text-sm">
       <span className="mb-1 block font-medium text-ink">{label}</span>

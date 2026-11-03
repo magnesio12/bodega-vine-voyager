@@ -45,21 +45,21 @@ export interface SourceRef {
 }
 
 export interface MovementData {
-  parcelId?: string;
-  kg?: number;
-  factor?: number;
-  vesselId?: string;
-  vesselIds?: string[];
-  macStart?: string;
-  macEnd?: string;
-  remito?: string;
-  truck?: string;
-  driver?: string;
-  destPlant?: PlantId;
-  sentLiters?: number;
-  receivedLiters?: number;
-  productId?: string;
-  bottles?: number;
+  parcelId?: string | undefined;
+  kg?: number | undefined;
+  factor?: number | undefined;
+  vesselId?: string | undefined;
+  vesselIds?: string[] | undefined;
+  macStart?: string | undefined;
+  macEnd?: string | undefined;
+  remito?: string | undefined;
+  truck?: string | undefined;
+  driver?: string | undefined;
+  destPlant?: PlantId | undefined;
+  sentLiters?: number | undefined;
+  receivedLiters?: number | undefined;
+  productId?: string | undefined;
+  bottles?: number | undefined;
 }
 
 export interface Movement {
@@ -70,8 +70,8 @@ export interface Movement {
   sources: SourceRef[];
   outputs: string[];
   merma: number;
-  note?: string;
-  annulled?: boolean;
+  note?: string | undefined;
+  annulled?: boolean | undefined;
   data: MovementData;
 }
 
@@ -87,11 +87,11 @@ export interface Lot {
   date: string;
   litersIn: number;
   status: LotStatus;
-  parcelId?: string;
-  harvestDate?: string;
-  productId?: string;
-  bottles?: number;
-  remito?: string;
+  parcelId?: string | undefined;
+  harvestDate?: string | undefined;
+  productId?: string | undefined;
+  bottles?: number | undefined;
+  remito?: string | undefined;
 }
 
 export interface Db {
@@ -109,19 +109,19 @@ export interface Db {
 export interface MovementInput {
   type: MovementType;
   date: string;
-  sources?: SourceRef[];
-  vesselId?: string;
-  vesselIds?: string[];
-  merma?: number;
-  parcelId?: string;
-  kg?: number;
-  factor?: number;
-  macStart?: string;
-  macEnd?: string;
-  truck?: string;
-  driver?: string;
-  receivedLiters?: number;
-  productId?: string;
-  name?: string;
-  note?: string;
+  sources?: SourceRef[] | undefined;
+  vesselId?: string | undefined;
+  vesselIds?: string[] | undefined;
+  merma?: number | undefined;
+  parcelId?: string | undefined;
+  kg?: number | undefined;
+  factor?: number | undefined;
+  macStart?: string | undefined;
+  macEnd?: string | undefined;
+  truck?: string | undefined;
+  driver?: string | undefined;
+  receivedLiters?: number | undefined;
+  productId?: string | undefined;
+  name?: string | undefined;
+  note?: string | undefined;
 }
