@@ -1,8 +1,8 @@
 # Bodega Miras · Sistema de trazabilidad
 
-Entregado por **KODARVIA** a Bodega Miras (Alto Valle de Río Negro). Muestra el grafo de lotes de vino en las dos plantas (Mainqué y Fernández Oro), controla las mermas de cada viaje en camión cisterna y verifica si un lote cumple las reglas de la línea a la que se lo quiere destinar.
+Sistema de trazabilidad para Bodega Miras (Alto Valle de Río Negro). Muestra el grafo de lotes de vino en las dos plantas (Mainqué y Fernández Oro), controla las mermas de cada viaje en camión cisterna y verifica si un lote cumple las reglas de la línea a la que se lo quiere destinar.
 
-Hecho con React (TanStack Start), Tailwind CSS y `localStorage`. No tiene backend: KODARVIA integra después el backend, las políticas y el despliegue.
+Hecho con React (TanStack Start), Tailwind CSS y `localStorage`. No tiene backend: el backend, las políticas y el despliegue se integran después.
 
 ## Cómo correrlo
 
@@ -42,7 +42,7 @@ Nota: la suma real de los recipientes de Mainqué da 23.600 L (4 × 4.000 + 2 ×
 - Clave inicial: **`miras1958`**
 - Se define en `src/lib/bodega/store.ts` → `DEFAULT_ADMIN_KEY`. Cambiala ahí para un valor inicial distinto.
 - Desde **Admin → Clave del panel** se cambia en ese navegador (queda en `localStorage`, clave `bodega-miras:clave-admin`; borrarla vuelve a la inicial).
-- Es una protección local del frontend: el control de acceso real lo pone el backend de KODARVIA.
+- Es una protección local del frontend: el control de acceso real lo pone el backend.
 
 ## Reglas implementadas
 
@@ -93,4 +93,4 @@ El CSV usa exactamente las mismas celdas formateadas que la tabla (separador `;`
 
 ## Pendiente fuera del alcance de esta entrega
 
-Compartir el proyecto con partners@kodarvia.com se hace desde la configuración del proyecto en Lovable (Invitar / Compartir); no se puede hacer desde el código.
+Compartir el proyecto con los socios se hace desde la configuración del proyecto en Lovable (Invitar / Compartir); no se puede hacer desde el código.
