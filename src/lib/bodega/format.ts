@@ -13,7 +13,7 @@ export const fmtMonths = (m: number) => `${nf1.format(Math.round(m * 10) / 10)} 
 export const round1 = (n: number) => Math.round(n * 10) / 10;
 
 export function fmtDate(iso: string) {
-  const [d] = iso.split("T");
+  const d = iso.slice(0, 10);
   const [y, m, day] = d.split("-");
   return `${day}/${m}/${y}`;
 }

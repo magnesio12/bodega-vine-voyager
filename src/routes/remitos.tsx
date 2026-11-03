@@ -43,8 +43,8 @@ function Remitos() {
       <h2 className="mt-6 mb-2 text-2xl">Historial</h2>
       <ul className="space-y-2">
         {trips.map((m) => {
-          const t = d.lots.get(m.outputs[0])!;
-          const origin = d.lots.get(m.sources[0].lotId)!;
+          const t = d.lots.get(m.outputs[0]!)!;
+          const origin = d.lots.get(m.sources[0]!.lotId)!;
           const rec = d.children.get(t.id)?.[0];
           const recMov = rec?.movement;
           const recLot = rec ? d.lots.get(rec.lotId) : undefined;
@@ -97,7 +97,7 @@ function Reception({ lot, onAnnul }: { lot: Lot; onAnnul: (id: string) => void }
       const r = applyMovement(getDb(), { type: "recepcion", date, sources: [{ lotId: lot.id, liters: lot.litersIn }], receivedLiters: rec, vesselId });
       setDb(r.db);
       setErr(null);
-      setOk(`Recibido en ${vesselId}: lote ${r.lots[0].code}.`);
+      setOk(`Recibido en ${vesselId}: lote ${r.lots[0]!.code}.`);
     } catch (e2) {
       setErr(e2 instanceof BodegaError ? e2.message : String(e2));
     }

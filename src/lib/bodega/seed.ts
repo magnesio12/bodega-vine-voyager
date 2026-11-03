@@ -80,14 +80,15 @@ export function buildSeed(): Db {
     remitoSeq: 0,
   };
   const L: Record<string, string> = {};
-  const lotIn = (key: string) => db.lots.find((l) => l.id === L[key])!.litersIn;
+  const K = (k: string) => L[k]!;
+  const lotIn = (key: string) => db.lots.find((l) => l.id === K(key))!.litersIn;
   const run = (input: MovementInput, keys: string[] = []) => {
     const r = applyMovement(db, input);
     db = r.db;
-    keys.forEach((k, i) => (L[k] = r.lots[i]?.id));
+    keys.forEach((k, i) => (L[k] = r.lots[i]?.id ?? ""));
     return r;
   };
-  const S = (key: string, liters?: number) => ({ lotId: L[key], liters: liters ?? lotIn(key) });
+  const S = (key: string, liters?: number) => ({ lotId: K(key), liters: liters ?? lotIn(key) });
   const all = (key: string) => S(key);
   const clean = (date: string, vesselId: string) => run({ type: "limpieza", date, vesselId });
   const pick = <T,>(arr: T[]) => arr[Math.floor(rnd() * arr.length)];
@@ -96,7 +97,7 @@ export function buildSeed(): Db {
     const mm = String(Math.floor(rnd() * 4) * 15).padStart(2, "0");
     run({ type: "traslado", date: `${date}T0${hh}:${mm}`, sources: [S(key, liters)], truck: pick(TRUCKS), driver: pick(DRIVERS), note }, [`${outKey}-T`]);
     if (recv)
-      run({ type: "recepcion", date: recv.at, sources: [{ lotId: L[`${outKey}-T`], liters }], receivedLiters: recv.liters, vesselId: recv.vessel }, [outKey]);
+      run({ type: "recepcion", date: recv.at, sources: [{ lotId: K(`${outKey}-T`), liters }], receivedLiters: recv.liters, vesselId: recv.vessel }, [outKey]);
   };
 
   // ---- Vendimia 2025: Mainqué ----
@@ -154,8 +155,8 @@ export function buildSeed(): Db {
   run({ type: "crianza_llenado", date: "2025-05-08T09:00", sources: [all("MERR1")], merma: 10, vesselIds: ["B09", "B10"] });
   clean("2025-05-09T08:00", "T5");
   const cfb = run({ type: "crianza_llenado", date: "2025-05-13T09:00", sources: [S("CF2", 450)], vesselIds: ["B11", "B12"] });
-  L.CFB1 = cfb.lots[0].id;
-  L.CFB2 = cfb.lots[1].id;
+  L["CFB1"] = cfb.lots[0]!.id;
+  L["CFB2"] = cfb.lots[1]!.id;
   run({ type: "corte", date: "2025-05-20T09:00", sources: [all("NQR"), S("MAL", 401)], vesselId: "T3", name: "Base de guarda" }, ["BASE"]);
   const gb = run({ type: "crianza_llenado", date: "2025-05-20T11:00", sources: [S("BASE", 675)], vesselIds: ["B13", "B14", "B15"] });
   run({ type: "embotellado", date: "2025-05-27T08:00", sources: [S("PN", 1144)], productId: "jov-pn" });
