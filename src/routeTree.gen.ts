@@ -10,33 +10,140 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as LotesRouteImport } from './routes/lotes'
+import { Route as MovimientoRouteImport } from './routes/movimiento'
+import { Route as RecipientesRouteImport } from './routes/recipientes'
+import { Route as RemitosRouteImport } from './routes/remitos'
+import { Route as RetiroRouteImport } from './routes/retiro'
+import { Route as ValidadorRouteImport } from './routes/validador'
+import { Route as LotesIdRouteImport } from './routes/lotes.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LotesRoute = LotesRouteImport.update({
+  id: '/lotes',
+  path: '/lotes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MovimientoRoute = MovimientoRouteImport.update({
+  id: '/movimiento',
+  path: '/movimiento',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecipientesRoute = RecipientesRouteImport.update({
+  id: '/recipientes',
+  path: '/recipientes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RemitosRoute = RemitosRouteImport.update({
+  id: '/remitos',
+  path: '/remitos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RetiroRoute = RetiroRouteImport.update({
+  id: '/retiro',
+  path: '/retiro',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ValidadorRoute = ValidadorRouteImport.update({
+  id: '/validador',
+  path: '/validador',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LotesIdRoute = LotesIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => LotesRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/lotes': typeof LotesRouteWithChildren
+  '/movimiento': typeof MovimientoRoute
+  '/recipientes': typeof RecipientesRoute
+  '/remitos': typeof RemitosRoute
+  '/retiro': typeof RetiroRoute
+  '/validador': typeof ValidadorRoute
+  '/lotes/$id': typeof LotesIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/lotes': typeof LotesRouteWithChildren
+  '/movimiento': typeof MovimientoRoute
+  '/recipientes': typeof RecipientesRoute
+  '/remitos': typeof RemitosRoute
+  '/retiro': typeof RetiroRoute
+  '/validador': typeof ValidadorRoute
+  '/lotes/$id': typeof LotesIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRoute
+  '/lotes': typeof LotesRouteWithChildren
+  '/movimiento': typeof MovimientoRoute
+  '/recipientes': typeof RecipientesRoute
+  '/remitos': typeof RemitosRoute
+  '/retiro': typeof RetiroRoute
+  '/validador': typeof ValidadorRoute
+  '/lotes/$id': typeof LotesIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/lotes'
+    | '/movimiento'
+    | '/recipientes'
+    | '/remitos'
+    | '/retiro'
+    | '/validador'
+    | '/lotes/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/admin'
+    | '/lotes'
+    | '/movimiento'
+    | '/recipientes'
+    | '/remitos'
+    | '/retiro'
+    | '/validador'
+    | '/lotes/$id'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/lotes'
+    | '/movimiento'
+    | '/recipientes'
+    | '/remitos'
+    | '/retiro'
+    | '/validador'
+    | '/lotes/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRoute
+  LotesRoute: typeof LotesRouteWithChildren
+  MovimientoRoute: typeof MovimientoRoute
+  RecipientesRoute: typeof RecipientesRoute
+  RemitosRoute: typeof RemitosRoute
+  RetiroRoute: typeof RetiroRoute
+  ValidadorRoute: typeof ValidadorRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +155,84 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lotes': {
+      id: '/lotes'
+      path: '/lotes'
+      fullPath: '/lotes'
+      preLoaderRoute: typeof LotesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/movimiento': {
+      id: '/movimiento'
+      path: '/movimiento'
+      fullPath: '/movimiento'
+      preLoaderRoute: typeof MovimientoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recipientes': {
+      id: '/recipientes'
+      path: '/recipientes'
+      fullPath: '/recipientes'
+      preLoaderRoute: typeof RecipientesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/remitos': {
+      id: '/remitos'
+      path: '/remitos'
+      fullPath: '/remitos'
+      preLoaderRoute: typeof RemitosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/retiro': {
+      id: '/retiro'
+      path: '/retiro'
+      fullPath: '/retiro'
+      preLoaderRoute: typeof RetiroRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/validador': {
+      id: '/validador'
+      path: '/validador'
+      fullPath: '/validador'
+      preLoaderRoute: typeof ValidadorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lotes/$id': {
+      id: '/lotes/$id'
+      path: '/$id'
+      fullPath: '/lotes/$id'
+      preLoaderRoute: typeof LotesIdRouteImport
+      parentRoute: typeof LotesRoute
+    }
   }
 }
 
+interface LotesRouteChildren {
+  LotesIdRoute: typeof LotesIdRoute
+}
+
+const LotesRouteChildren: LotesRouteChildren = {
+  LotesIdRoute: LotesIdRoute,
+}
+
+const LotesRouteWithChildren = LotesRoute._addFileChildren(LotesRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRoute,
+  LotesRoute: LotesRouteWithChildren,
+  MovimientoRoute: MovimientoRoute,
+  RecipientesRoute: RecipientesRoute,
+  RemitosRoute: RemitosRoute,
+  RetiroRoute: RetiroRoute,
+  ValidadorRoute: ValidadorRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
