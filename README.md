@@ -37,6 +37,18 @@ Nota: la suma real de los recipientes de Mainqué da 23.600 L (4 × 4.000 + 2 ×
 - O a mano: borrar la clave `bodega-miras:datos` del `localStorage` del navegador y recargar.
 - Si cambiás `seed.ts`, subí `SEED_VERSION` y todos los navegadores recargan la semilla nueva.
 
+## Funcionalidades simuladas
+
+No hay correos, pagos ni WhatsApp en ninguna pantalla: nada de eso está implementado ni se envía a ningún servicio externo. Todo ocurre en el navegador.
+
+| Qué parece real | Qué pasa en verdad |
+|---|---|
+| **Simulación de retiro** (`/retiro`) | Solo calcula y muestra la tabla de lotes afectados. No avisa a nadie, no genera orden de destrucción ni comunica a clientes. El botón **Exportar CSV** baja un archivo `retiro-R-XXXX.csv` a la carpeta de descargas del navegador. |
+| **Remitos** (`/remitos`) | La llegada se tipea a mano: no hay balanza, GPS ni lectura de precinto. Si los litros recibidos difieren en más de 0,3 % de los enviados, la recepción se rechaza con la diferencia exacta. |
+| **Panel de administración** (`/admin`) | La clave protege solo esta pantalla en este navegador. No hay usuarios, roles ni log: cualquiera con la clave ve lo mismo. **Exportar datos (JSON)** baja `bodega-miras-datos.json`. |
+| **Fechas y horas** | Salen del reloj del dispositivo, no de un servidor ni de un POS. |
+| **Datos de la vendimia 2025** | Inventados por `seed.ts` (parcelas, kilos, patentes, choferes). No reflejan una cosecha real. |
+
 ## Clave del panel de administración
 
 - Clave inicial: **`miras1958`**
@@ -87,9 +99,13 @@ El CSV usa exactamente las mismas celdas formateadas que la tabla (separador `;`
 ## Estructura
 
 - `src/lib/bodega/engine.ts` — grafo, saldos, capacidad, condiciones heredadas, validador, retiro, anulación (sin React, probado en `src/test/bodega.test.ts`).
+- `src/lib/bodega/types.ts` — tipos de datos (lote, movimiento, recipiente, remito).
+- `src/lib/bodega/format.ts` — cómo se escriben litros, porcentajes y fechas.
 - `src/lib/bodega/seed.ts` — datos semilla deterministas.
-- `src/lib/bodega/store.ts` — persistencia en `localStorage`.
-- `src/routes/*` — pantallas.
+- `src/lib/bodega/store.ts` — persistencia en `localStorage`, clave del panel y `SEED_VERSION`.
+- `src/routes/*` — una pantalla por archivo (`__root.tsx` trae el menú y el pie).
+- `src/components/bodega/AppShell.tsx` — menú y encabezado; `ui.tsx` — piezas reutilizadas (tarjetas, botones, avisos).
+- `src/test/bodega.test.ts` — los 7 criterios de validación; `src/test/app-routing.test.tsx` — que todas las rutas existan.
 
 ## Pendiente fuera del alcance de esta entrega
 
